@@ -115,10 +115,17 @@ namespace Readarr.Api.V1.BookFiles
         [HttpGet("download/{id:int}")]
         public IActionResult GetBookFile(int id)
         {
-            var bookFile = _mediaFileService.Get(id);
-            var filePath = bookFile.Path;
-            Response.Headers.Add("Content-Disposition", string.Format("attachment;filename={0}", PathExtensions.BaseName(filePath)));
-            return new PhysicalFileResult(filePath, GetContentType(filePath));
+            try
+            {
+                var bookFile = _mediaFileService.Get(id);
+                var filePath = bookFile.Path;
+                Response.Headers.Add("content-disposition", string.Format("attachment;filename={0}", PathExtensions.BaseName(filePath)));
+                return new PhysicalFileResult(filePath, GetContentType(filePath));
+            }
+            catch
+            {
+                throw new BadRequestException(string.Format("no bookfiles exist for id: {0}", id));
+            }
         }
 
         [RestPutById]
@@ -198,7 +205,27 @@ namespace Readarr.Api.V1.BookFiles
         {
             if (!_mimeTypeProvider.TryGetContentType(filePath, out var contentType))
             {
-                contentType = string.Format("application/{0}", PathExtensions.GetPathExtension(filePath));
+                var ext = PathExtensions.GetPathExtension(filePath);
+                if (ext.Contains("epub"))
+                {
+                    contentType = "application/epub+zip";
+                }
+                else if (ext.Contains("azw"))
+                {
+                    contentType = "application/vnd.amazon.ebook";
+                }
+                else if (ext.Contains("azw"))
+                {
+                    contentType = "application/x-mobipocket-ebook";
+                }
+                else if (ext.Contains("pdf"))
+                {
+                    contentType = "application/pdf";
+                }
+                else
+                {
+                    contentType = "application/octet-stream";
+                }
             }
 
             return contentType;
