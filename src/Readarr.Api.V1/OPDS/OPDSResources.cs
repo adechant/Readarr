@@ -6,6 +6,7 @@ using NzbDrone.Core.Books;
 using NzbDrone.Core.Datastore;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.MediaFiles;
+using Readarr.Api.V1.Books;
 using Readarr.Http.REST;
 
 namespace Readarr.Api.V1.OPDS
@@ -13,6 +14,11 @@ namespace Readarr.Api.V1.OPDS
     public class OPDSCatalogMetadataResource : IEmbeddedDocument
     {
         public string Title { get; set; }
+        public int NumberOfItems { get; set; }
+
+        public int ItemsPerPage { get; set; }
+
+        public int CurrentPage { get; set; }
     }
 
     public class OPDSLinkResource : IEmbeddedDocument
@@ -26,6 +32,7 @@ namespace Readarr.Api.V1.OPDS
     public class OPDSPublicationMetadataResource : IEmbeddedDocument
     {
         public int Id { get; set; }
+        public int AuthorId { get; set; }
         public string Title { get; set; }
         public string @Type { get; set; }
         public string Author { get; set; }
@@ -36,7 +43,9 @@ namespace Readarr.Api.V1.OPDS
         public List<string> Genres { get; set; }
         public double Rating { get; set; }
         public int Votes { get; set; }
+        public string ForeignAuthorId { get; set; }
         public string ForeignBookId { get; set; }
+        public string ForeignEditionId { get; set; }
     }
 
     public class OPDSImageResource : IEmbeddedDocument
@@ -71,6 +80,8 @@ namespace Readarr.Api.V1.OPDS
     {
         public static OPDSCatalogResource ToOPDSCatalogResource()
         {
+            var links = new List<OPDSLinkResource>();
+
             var self = new OPDSLinkResource
             {
                 Href = "/opds",
@@ -78,16 +89,23 @@ namespace Readarr.Api.V1.OPDS
                 Title = "Readarr OPDS Catalog",
                 Type = "application/opds+json"
             };
-
-            var links = new List<OPDSLinkResource>();
             links.Add(self);
 
             var nav = new List<OPDSLinkResource>();
+            var search = new OPDSLinkResource
+            {
+                Href = "/opds/publications/search{?query,title,author}",
+                Rel = "self",
+                Title = "Readarr Publication Search",
+                Type = "application/opds+json"
+            };
+            nav.Add(search);
+
             var pubs = new OPDSLinkResource
             {
                 Href = "/opds/publications",
                 Rel = "self",
-                Title = "Readarr OPDS Available Publications",
+                Title = "Available Publications",
                 Type = "application/opds+json"
             };
             nav.Add(pubs);
@@ -97,25 +115,42 @@ namespace Readarr.Api.V1.OPDS
                 Title = self.Title
             };
 
-            var wanted = new OPDSLinkResource
+            var monitored = new OPDSLinkResource
             {
-                Href = "/opds/wanted",
+                Href = "/opds/monitored",
                 Rel = "self",
-                Title = "Readarr OPDS Wanted Publications",
+                Title = "Monitored Publications",
                 Type = "application/opds+json"
             };
-            nav.Add(wanted);
+            nav.Add(monitored);
+
+            var unmonitored = new OPDSLinkResource
+            {
+                Href = "/opds/unmonitored",
+                Rel = "self",
+                Title = "Unmonitored Publications",
+                Type = "application/opds+json"
+            };
+            nav.Add(unmonitored);
+
+            var searchUnmonitored = new OPDSLinkResource
+            {
+                Href = "/opds/unmonitored/search{?query,title,author}",
+                Rel = "self",
+                Title = "Readarr Unmonitored Search",
+                Type = "application/opds+json"
+            };
+            nav.Add(searchUnmonitored);
 
             return new OPDSCatalogResource
             {
                 Metadata = meta,
                 Links = links,
                 Navigation = nav,
-                Publications = new List<OPDSPublicationResource>()
             };
         }
 
-        public static OPDSPublicationsResource ToOPDSPublicationsResource()
+        public static OPDSPublicationsResource ToOPDSPublicationsResource(int page, int itemsPerPage, int totalItems)
         {
             var self = new OPDSLinkResource
             {
@@ -130,7 +165,10 @@ namespace Readarr.Api.V1.OPDS
 
             var meta = new OPDSCatalogMetadataResource
             {
-                Title = self.Title
+                Title = self.Title,
+                ItemsPerPage = itemsPerPage,
+                CurrentPage = page,
+                NumberOfItems = totalItems
             };
 
             return new OPDSPublicationsResource
@@ -141,23 +179,26 @@ namespace Readarr.Api.V1.OPDS
             };
         }
 
-        public static OPDSPublicationMetadataResource ToOPDSPublicationMetadataResource(Book book)
+        public static OPDSPublicationMetadataResource ToOPDSPublicationMetadataResource(Book book, Edition edition)
         {
-            var edition = book.Editions?.Value.Where(x => x.Monitored).SingleOrDefault();
+            var resource = book.ToResource();
             return new OPDSPublicationMetadataResource
             {
                 Id = book.Id,
-                Title = book.Title,
+                Title = resource.Title,
                 @Type = "http://schema.org/Book",
                 Author = book.Author.Value?.Metadata?.Value?.SortNameLastFirst ?? book.Author.Value.Name,
-                Identifier = edition.Isbn13,
-                Language = edition.Language,
+                AuthorId = book.AuthorId,
+                Identifier = edition == null ? "" : edition.Isbn13,
+                Language = edition == null ? "" : edition.Language,
                 Modified = book.ReleaseDate ?? DateTime.Now,
-                Description = edition.Overview,
+                Description = edition == null ? "" : edition.Overview,
                 Genres = book.Genres,
                 Votes = book.Ratings.Votes,
                 Rating = (double)book.Ratings.Value,
+                ForeignAuthorId = book.Author.Value?.ForeignAuthorId,
                 ForeignBookId = book.ForeignBookId,
+                ForeignEditionId = edition == null ? "" : edition.ForeignEditionId,
             };
         }
 
@@ -218,7 +259,7 @@ namespace Readarr.Api.V1.OPDS
 
             return new OPDSPublicationResource
             {
-                Metadata = ToOPDSPublicationMetadataResource(book),
+                Metadata = ToOPDSPublicationMetadataResource(book, edition),
                 Links = linkResources,
                 Images = imageResources
             };
