@@ -176,30 +176,6 @@ class BookFileEditorTableContent extends Component {
             null
         }
 
-<<<<<<< HEAD
-        <div className={styles.actions}>
-
-          <div className={styles.actions}>
-            <SelectInput
-              name="quality"
-              value="selectQuality"
-              values={qualityOptions}
-              isDisabled={!hasSelectedFiles}
-              onChange={this.onQualityChange}
-            />
-          </div>
-
-          <SpinnerButton
-            kind={kinds.DANGER}
-            isSpinning={isDeleting}
-            isDisabled={!hasSelectedFiles}
-            onPress={this.onDeletePress}
-          >
-            Delete
-          </SpinnerButton>
-
-        </div>
-=======
         {
           isPopulated && items.length ? (
             <div className={styles.actions}>
@@ -224,7 +200,6 @@ class BookFileEditorTableContent extends Component {
             </div>
           ) : null
         }
->>>>>>> dc83e0127... Fixed: Minor UI improvements to author and book details
 
         <ConfirmModal
           isOpen={isConfirmDeleteModalOpen}
