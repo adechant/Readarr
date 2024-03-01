@@ -17,7 +17,7 @@ namespace NzbDrone.Core.Download
 {
     public interface IDownloadService
     {
-        Task DownloadReport(RemoteBook remoteBook);
+        Task DownloadReport(RemoteBook remoteBook, int? downloadClientId);
     }
 
     public class DownloadService : IDownloadService
@@ -50,13 +50,15 @@ namespace NzbDrone.Core.Download
             _logger = logger;
         }
 
-        public async Task DownloadReport(RemoteBook remoteBook)
+        public async Task DownloadReport(RemoteBook remoteBook, int? downloadClientId)
         {
             var filterBlockedClients = remoteBook.Release.PendingReleaseReason == PendingReleaseReason.DownloadClientUnavailable;
 
             var tags = remoteBook.Author?.Tags;
 
-            var downloadClient = _downloadClientProvider.GetDownloadClient(remoteBook.Release.DownloadProtocol, remoteBook.Release.IndexerId, filterBlockedClients, tags);
+            var downloadClient = downloadClientId.HasValue
+                ? _downloadClientProvider.Get(downloadClientId.Value)
+                : _downloadClientProvider.GetDownloadClient(remoteBook.Release.DownloadProtocol, remoteBook.Release.IndexerId, filterBlockedClients, tags);
 
             await DownloadReport(remoteBook, downloadClient);
         }
@@ -102,6 +104,11 @@ namespace NzbDrone.Core.Download
                 _logger.Trace("Release {0} no longer available on indexer.", remoteBook);
                 throw;
             }
+            catch (ReleaseBlockedException)
+            {
+                _logger.Trace("Release {0} previously added to blocklist, not sending to download client again.", remoteBook);
+                throw;
+            }
             catch (DownloadClientRejectedReleaseException)
             {
                 _logger.Trace("Release {0} rejected by download client, possible duplicate.", remoteBook);
@@ -126,7 +133,7 @@ namespace NzbDrone.Core.Download
             bookGrabbedEvent.DownloadClientId = downloadClient.Definition.Id;
             bookGrabbedEvent.DownloadClientName = downloadClient.Definition.Name;
 
-            if (!string.IsNullOrWhiteSpace(downloadClientId))
+            if (downloadClientId.IsNotNullOrWhiteSpace())
             {
                 bookGrabbedEvent.DownloadId = downloadClientId;
             }

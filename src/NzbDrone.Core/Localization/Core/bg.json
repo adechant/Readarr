@@ -64,7 +64,7 @@
     "CreateGroup": "Създай група",
     "CutoffHelpText": "След достигане на това качество Radarr вече няма да изтегля филми",
     "CutoffUnmet": "Прекъсване Неудовлетворено",
-    "DBMigration": "DB миграция",
+    "DatabaseMigration": "DB миграция",
     "Dates": "Дати",
     "DelayProfile": "Профил за забавяне",
     "DelayProfiles": "Профили за забавяне",
@@ -122,8 +122,6 @@
     "ErrorLoadingContents": "Грешка при зареждането на съдържанието",
     "ErrorLoadingPreviews": "Грешка при зареждането на визуализациите",
     "Exception": "Изключение",
-    "ExtraFileExtensionsHelpTexts1": "Списък с допълнителни файлове за импортиране, разделени със запетая (.nfo ще бъде импортиран като .nfo-orig)",
-    "ExtraFileExtensionsHelpTexts2": "Примери: '.sub, .nfo' или 'sub, nfo'",
     "FailedDownloadHandling": "Неуспешно обработване на изтеглянето",
     "FileDateHelpText": "Променете датата на файла при импортиране / пресканиране",
     "FileManagement": "Управление на файлове",
@@ -628,5 +626,9 @@
     "AllResultsAreHiddenByTheAppliedFilter": "Всички резултати са скрити от приложения филтър",
     "Backup": "Архивиране",
     "MetadataProfiles": "Добави профил на метадата",
-    "MetadataProfile": "Добави профил на метадата"
+    "MetadataProfile": "Добави профил на метадата",
+    "ExtraFileExtensionsHelpText": "Списък с допълнителни файлове за импортиране, разделени със запетая (.nfo ще бъде импортиран като .nfo-orig)",
+    "ExtraFileExtensionsHelpTextsExamples": "Примери: '.sub, .nfo' или 'sub, nfo'",
+    "AutoRedownloadFailed": "Изтеглянето се провали",
+    "SourceTitle": "Заглавие на източника"
 }
