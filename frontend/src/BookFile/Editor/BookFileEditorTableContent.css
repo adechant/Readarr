@@ -13,12 +13,7 @@
 
 .actions {
   display: flex;
-<<<<<<< HEAD
-  margin-right: auto;
-  gap: 10px;
-=======
   margin: 10px;
->>>>>>> dc83e0127... Fixed: Minor UI improvements to author and book details
 }
 
 .selectInput {
