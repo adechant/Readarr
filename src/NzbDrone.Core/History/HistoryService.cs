@@ -162,15 +162,15 @@ namespace NzbDrone.Core.History
                 history.Data.Add("Guid", message.Book.Release.Guid);
                 history.Data.Add("Protocol", ((int)message.Book.Release.DownloadProtocol).ToString());
                 history.Data.Add("DownloadForced", (!message.Book.DownloadAllowed).ToString());
+                history.Data.Add("CustomFormatScore", message.Book.CustomFormatScore.ToString());
+                history.Data.Add("ReleaseSource", message.Book.ReleaseSource.ToString());
 
                 if (!message.Book.ParsedBookInfo.ReleaseHash.IsNullOrWhiteSpace())
                 {
                     history.Data.Add("ReleaseHash", message.Book.ParsedBookInfo.ReleaseHash);
                 }
 
-                var torrentRelease = message.Book.Release as TorrentInfo;
-
-                if (torrentRelease != null)
+                if (message.Book.Release is TorrentInfo torrentRelease)
                 {
                     history.Data.Add("TorrentInfoHash", torrentRelease.InfoHash);
                 }
@@ -230,13 +230,13 @@ namespace NzbDrone.Core.History
                 DownloadId = downloadId
             };
 
-            //Won't have a value since we publish this event before saving to DB.
-            //history.Data.Add("FileId", message.ImportedEpisode.Id.ToString());
+            history.Data.Add("FileId", message.ImportedBook.Id.ToString());
             history.Data.Add("DroppedPath", message.BookInfo.Path);
             history.Data.Add("ImportedPath", message.ImportedBook.Path);
             history.Data.Add("DownloadClient", message.DownloadClientInfo?.Type);
             history.Data.Add("DownloadClientName", message.DownloadClientInfo?.Name);
             history.Data.Add("ReleaseGroup", message.BookInfo.ReleaseGroup);
+            history.Data.Add("Size", message.BookInfo.Size.ToString());
 
             _historyRepository.Insert(history);
         }
@@ -259,6 +259,7 @@ namespace NzbDrone.Core.History
                 history.Data.Add("DownloadClient", message.DownloadClient);
                 history.Data.Add("DownloadClientName", message.TrackedDownload?.DownloadItem.DownloadClientInfo.Name);
                 history.Data.Add("Message", message.Message);
+                history.Data.Add("Size", message.TrackedDownload?.DownloadItem.TotalSize.ToString());
 
                 _historyRepository.Insert(history);
             }
@@ -311,6 +312,7 @@ namespace NzbDrone.Core.History
             history.Data.Add("SourcePath", sourcePath);
             history.Data.Add("Path", path);
             history.Data.Add("ReleaseGroup", message.BookFile.ReleaseGroup);
+            history.Data.Add("Size", message.BookFile.Size.ToString());
 
             _historyRepository.Insert(history);
         }
@@ -362,8 +364,9 @@ namespace NzbDrone.Core.History
                 };
 
                 history.Data.Add("DownloadClient", message.DownloadClientInfo.Name);
-                history.Data.Add("ReleaseGroup", message.TrackedDownload?.RemoteBook?.ParsedBookInfo?.ReleaseGroup);
                 history.Data.Add("Message", message.Message);
+                history.Data.Add("ReleaseGroup", message.TrackedDownload?.RemoteBook?.ParsedBookInfo?.ReleaseGroup);
+                history.Data.Add("Size", message.TrackedDownload?.DownloadItem.TotalSize.ToString());
 
                 historyToAdd.Add(history);
             }

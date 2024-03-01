@@ -8,9 +8,9 @@
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
 "@adobe/css-tools@^4.0.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.3.1.tgz#abfccb8ca78075a2b6187345c26243c1a0842f28"
-  integrity sha512-/62yikz7NLScCGAAST5SHdnjaDJQBDq0M2muyRTpf2VQhw6StBg2ALiu73zSJQ4fMVLA+0uBhBHAle7Wg+2kSg==
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/@adobe/css-tools/-/css-tools-4.3.2.tgz#a6abc715fb6884851fca9dad37fc34739a04fd11"
+  integrity sha512-DA5a1C0gD/pLOvhv33YMrbf2FK3oUzwNl9oOJqE4XVjuEtt6XIakRcsd7eLiOSPkp1kTRQGICTA8cKra/vFbjw==
 
 "@ampproject/remapping@^2.2.0":
   version "2.2.1"
@@ -1259,10 +1259,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@microsoft/signalr@6.0.21":
-  version "6.0.21"
-  resolved "https://registry.yarnpkg.com/@microsoft/signalr/-/signalr-6.0.21.tgz#b45f335df7011abba831cb3d7974b58da7e725c7"
-  integrity sha512-3MWhSUE7AxkQs3QBuJ/spJJpg1mAHo0/6yRGhs5+Hew3Z+iqYrHVfo0yTElC7W2bVA9t3fW3jliQ9rBN0OvJLA==
+"@microsoft/signalr@6.0.25":
+  version "6.0.25"
+  resolved "https://registry.yarnpkg.com/@microsoft/signalr/-/signalr-6.0.25.tgz#009f043066d383e2de41a483bd7e02bfd74d3cf8"
+  integrity sha512-8AzrpxS+E0yn1tXSlv7+UlURLmSxTQDgbvOT0pGKXjZT7MkhnDP+/GLuk7veRtUjczou/x32d9PHhYlr2NBy6Q==
   dependencies:
     abort-controller "^3.0.0"
     eventsource "^1.0.7"

@@ -15,6 +15,7 @@ namespace NzbDrone.Core.Blocklisting
     public interface IBlocklistService
     {
         bool Blocklisted(int authorId, ReleaseInfo release);
+        bool BlocklistedTorrentHash(int authorId, string hash);
         PagingSpec<Blocklist> Paged(PagingSpec<Blocklist> pagingSpec);
         void Block(RemoteBook remoteEpisode, string message);
         void Delete(int id);
@@ -36,30 +37,34 @@ namespace NzbDrone.Core.Blocklisting
 
         public bool Blocklisted(int authorId, ReleaseInfo release)
         {
-            var blocklistedByTitle = _blocklistRepository.BlocklistedByTitle(authorId, release.Title);
-
             if (release.DownloadProtocol == DownloadProtocol.Torrent)
             {
-                var torrentInfo = release as TorrentInfo;
-
-                if (torrentInfo == null)
+                if (release is not TorrentInfo torrentInfo)
                 {
                     return false;
                 }
 
-                if (torrentInfo.InfoHash.IsNullOrWhiteSpace())
+                if (torrentInfo.InfoHash.IsNotNullOrWhiteSpace())
                 {
-                    return blocklistedByTitle.Where(b => b.Protocol == DownloadProtocol.Torrent)
-                                             .Any(b => SameTorrent(b, torrentInfo));
+                    var blocklistedByTorrentInfohash = _blocklistRepository.BlocklistedByTorrentInfoHash(authorId, torrentInfo.InfoHash);
+
+                    return blocklistedByTorrentInfohash.Any(b => SameTorrent(b, torrentInfo));
                 }
 
-                var blocklistedByTorrentInfohash = _blocklistRepository.BlocklistedByTorrentInfoHash(authorId, torrentInfo.InfoHash);
-
-                return blocklistedByTorrentInfohash.Any(b => SameTorrent(b, torrentInfo));
+                return _blocklistRepository.BlocklistedByTitle(authorId, release.Title)
+                    .Where(b => b.Protocol == DownloadProtocol.Torrent)
+                    .Any(b => SameTorrent(b, torrentInfo));
             }
 
-            return blocklistedByTitle.Where(b => b.Protocol == DownloadProtocol.Usenet)
-                                     .Any(b => SameNzb(b, release));
+            return _blocklistRepository.BlocklistedByTitle(authorId, release.Title)
+                .Where(b => b.Protocol == DownloadProtocol.Usenet)
+                .Any(b => SameNzb(b, release));
+        }
+
+        public bool BlocklistedTorrentHash(int authorId, string hash)
+        {
+            return _blocklistRepository.BlocklistedByTorrentInfoHash(authorId, hash).Any(b =>
+                b.TorrentInfoHash.Equals(hash, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public PagingSpec<Blocklist> Paged(PagingSpec<Blocklist> pagingSpec)

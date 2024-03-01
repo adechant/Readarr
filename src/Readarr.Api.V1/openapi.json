@@ -66,25 +66,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "Username": {
+                  "username": {
                     "type": "string"
                   },
-                  "Password": {
+                  "password": {
                     "type": "string"
                   },
-                  "RememberMe": {
+                  "rememberMe": {
                     "type": "string"
                   }
                 }
               },
               "encoding": {
-                "Username": {
+                "username": {
                   "style": "form"
                 },
-                "Password": {
+                "password": {
                   "style": "form"
                 },
-                "RememberMe": {
+                "rememberMe": {
                   "style": "form"
                 }
               }
@@ -517,21 +517,45 @@
         "tags": [
           "Blocklist"
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlocklistResourcePagingResource"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlocklistResourcePagingResource"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BlocklistResourcePagingResource"
                 }
@@ -1900,11 +1924,51 @@
         ],
         "parameters": [
           {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            }
+          },
+          {
             "name": "includeAuthor",
             "in": "query",
             "schema": {
               "type": "boolean",
               "default": false
+            }
+          },
+          {
+            "name": "monitored",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
             }
           }
         ],
@@ -2913,19 +2977,75 @@
         ],
         "parameters": [
           {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            }
+          },
+          {
             "name": "includeAuthor",
             "in": "query",
             "schema": {
-              "type": "boolean",
-              "default": false
+              "type": "boolean"
             }
           },
           {
             "name": "includeBook",
             "in": "query",
             "schema": {
-              "type": "boolean",
-              "default": false
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "eventType",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          {
+            "name": "bookId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "downloadId",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -2933,17 +3053,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/HistoryResourcePagingResource"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HistoryResourcePagingResource"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HistoryResourcePagingResource"
                 }
@@ -4221,21 +4331,52 @@
         "tags": [
           "Log"
         ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/LogResourcePagingResource"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LogResourcePagingResource"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/LogResourcePagingResource"
                 }
@@ -5182,11 +5323,51 @@
         ],
         "parameters": [
           {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            }
+          },
+          {
             "name": "includeAuthor",
             "in": "query",
             "schema": {
               "type": "boolean",
               "default": false
+            }
+          },
+          {
+            "name": "monitored",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
             }
           }
         ],
@@ -5366,21 +5547,21 @@
         ],
         "parameters": [
           {
-            "name": "RenameBooks",
+            "name": "renameBooks",
             "in": "query",
             "schema": {
               "type": "boolean"
             }
           },
           {
-            "name": "ReplaceIllegalCharacters",
+            "name": "replaceIllegalCharacters",
             "in": "query",
             "schema": {
               "type": "boolean"
             }
           },
           {
-            "name": "ColonReplacementFormat",
+            "name": "colonReplacementFormat",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -5388,63 +5569,63 @@
             }
           },
           {
-            "name": "StandardBookFormat",
+            "name": "standardBookFormat",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "AuthorFolderFormat",
+            "name": "authorFolderFormat",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "IncludeAuthorName",
+            "name": "includeAuthorName",
             "in": "query",
             "schema": {
               "type": "boolean"
             }
           },
           {
-            "name": "IncludeBookTitle",
+            "name": "includeBookTitle",
             "in": "query",
             "schema": {
               "type": "boolean"
             }
           },
           {
-            "name": "IncludeQuality",
+            "name": "includeQuality",
             "in": "query",
             "schema": {
               "type": "boolean"
             }
           },
           {
-            "name": "ReplaceSpaces",
+            "name": "replaceSpaces",
             "in": "query",
             "schema": {
               "type": "boolean"
             }
           },
           {
-            "name": "Separator",
+            "name": "separator",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "NumberStyle",
+            "name": "numberStyle",
             "in": "query",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "Id",
+            "name": "id",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -5452,7 +5633,7 @@
             }
           },
           {
-            "name": "ResourceName",
+            "name": "resourceName",
             "in": "query",
             "schema": {
               "type": "string"
@@ -6184,6 +6365,14 @@
               "type": "boolean",
               "default": false
             }
+          },
+          {
+            "name": "changeCategory",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -6217,6 +6406,14 @@
           },
           {
             "name": "skipRedownload",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "changeCategory",
             "in": "query",
             "schema": {
               "type": "boolean",
@@ -6257,6 +6454,38 @@
         ],
         "parameters": [
           {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortKey",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDirection",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortDirection"
+            }
+          },
+          {
             "name": "includeUnknownAuthorItems",
             "in": "query",
             "schema": {
@@ -6285,17 +6514,7 @@
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/QueueResourcePagingResource"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/QueueResourcePagingResource"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/QueueResourcePagingResource"
                 }
@@ -6754,16 +6973,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReleaseResource"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ReleaseResource"
-              }
-            },
-            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/ReleaseResource"
               }
@@ -8688,13 +8897,6 @@
           "sortDirection": {
             "$ref": "#/components/schemas/SortDirection"
           },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PagingResourceFilter"
-            },
-            "nullable": true
-          },
           "totalRecords": {
             "type": "integer",
             "format": "int32"
@@ -8721,6 +8923,10 @@
             "format": "int32"
           },
           "foreignBookId": {
+            "type": "string",
+            "nullable": true
+          },
+          "foreignEditionId": {
             "type": "string",
             "nullable": true
           },
@@ -8761,6 +8967,11 @@
           },
           "ratings": {
             "$ref": "#/components/schemas/Ratings"
+          },
+          "lastSearchTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "cleanTitle": {
             "type": "string",
@@ -9048,6 +9259,10 @@
             "type": "string",
             "nullable": true
           },
+          "foreignEditionId": {
+            "type": "string",
+            "nullable": true
+          },
           "titleSlug": {
             "type": "string",
             "nullable": true
@@ -9139,13 +9354,6 @@
           },
           "sortDirection": {
             "$ref": "#/components/schemas/SortDirection"
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PagingResourceFilter"
-            },
-            "nullable": true
           },
           "totalRecords": {
             "type": "integer",
@@ -9716,6 +9924,9 @@
           },
           "autoRedownloadFailed": {
             "type": "boolean"
+          },
+          "autoRedownloadFailedFromInteractiveSearch": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false
@@ -10228,13 +10439,6 @@
           },
           "sortDirection": {
             "$ref": "#/components/schemas/SortDirection"
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PagingResourceFilter"
-            },
-            "nullable": true
           },
           "totalRecords": {
             "type": "integer",
@@ -10903,13 +11107,6 @@
           },
           "sortDirection": {
             "$ref": "#/components/schemas/SortDirection"
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PagingResourceFilter"
-            },
-            "nullable": true
           },
           "totalRecords": {
             "type": "integer",
@@ -11635,20 +11832,6 @@
         },
         "additionalProperties": false
       },
-      "PagingResourceFilter": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "nullable": true
-          },
-          "value": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "ParseResource": {
         "type": "object",
         "properties": {
@@ -12256,6 +12439,9 @@
             "type": "string",
             "nullable": true
           },
+          "downloadClientHasPostImportCategory": {
+            "type": "boolean"
+          },
           "indexer": {
             "type": "string",
             "nullable": true
@@ -12287,13 +12473,6 @@
           },
           "sortDirection": {
             "$ref": "#/components/schemas/SortDirection"
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PagingResourceFilter"
-            },
-            "nullable": true
           },
           "totalRecords": {
             "type": "integer",
@@ -12577,6 +12756,15 @@
           "bookId": {
             "type": "integer",
             "format": "int32",
+            "nullable": true
+          },
+          "downloadClientId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "downloadClient": {
+            "type": "string",
             "nullable": true
           }
         },
