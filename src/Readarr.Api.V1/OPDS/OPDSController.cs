@@ -141,8 +141,8 @@ namespace Readarr.Api.V1.OPDS
             var ebookEdition = book.Editions?.Value.Where(x => x.IsEbook).SingleOrDefault();
             var selectedEdition = book.Editions?.Value.Where(x => x.Monitored).SingleOrDefault();
             var covers = selectedEdition?.Images ?? new List<MediaCover>();
-            _coverMapper.ConvertToLocalUrls(book.Id, MediaCoverEntity.Book, covers);
-            _coverMapper.ConvertToLocalUrls(book.Id, MediaCoverEntity.Book, images);
+            _coverMapper.ConvertToAPIUrls(book.Id, MediaCoverEntity.Book, covers);
+            _coverMapper.ConvertToAPIUrls(book.Id, MediaCoverEntity.Book, images);
             book.Author = author;
 
             return OPDSResourceMapper.ToOPDSPublicationResource(baseUrl, book, bookfiles, ebookEdition, images);
@@ -161,7 +161,7 @@ namespace Readarr.Api.V1.OPDS
                 var ebookEdition = book.Editions?.Value.Where(x => x.IsEbook).FirstOrDefault();
                 var anyEdition = book.Editions?.Value.FirstOrDefault();
                 var covers = selectedEdition?.Images ?? new List<MediaCover>();
-                _coverMapper.ConvertToLocalUrls(book.Id, MediaCoverEntity.Book, covers);
+                _coverMapper.ConvertToAPIUrls(book.Id, MediaCoverEntity.Book, covers);
                 var publication = OPDSResourceMapper.ToOPDSPublicationResource(baseUrl, book, bookfiles, ebookEdition ?? selectedEdition ?? anyEdition, covers);
                 publications.Add(publication);
             }

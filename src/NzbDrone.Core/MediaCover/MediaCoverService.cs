@@ -19,6 +19,7 @@ namespace NzbDrone.Core.MediaCover
     public interface IMapCoversToLocal
     {
         void ConvertToLocalUrls(int entityId, MediaCoverEntity coverEntity, IEnumerable<MediaCover> covers);
+        void ConvertToAPIUrls(int entityId, MediaCoverEntity coverEntity, IEnumerable<MediaCover> covers);
         string GetCoverPath(int entityId, MediaCoverEntity coverEntity, MediaCoverTypes coverType, string extension, int? height = null);
         void EnsureBookCovers(Book book);
     }
@@ -104,6 +105,26 @@ namespace NzbDrone.Core.MediaCover
                 {
                     var lastWrite = _diskProvider.FileGetLastWrite(filePath);
                     mediaCover.Url += "?lastWrite=" + lastWrite.Ticks;
+                }
+            }
+        }
+
+        public void ConvertToAPIUrls(int entityId, MediaCoverEntity coverEntity, IEnumerable<MediaCover> covers)
+        {
+            foreach (var mediaCover in covers)
+            {
+                if (mediaCover.CoverType == MediaCoverTypes.Unknown)
+                {
+                    continue;
+                }
+
+                if (coverEntity == MediaCoverEntity.Book)
+                {
+                    mediaCover.Url = _configFileProvider.UrlBase + @"/api/v1/mediacover/book/" + entityId + "/" + mediaCover.CoverType.ToString().ToLower() + GetExtension(mediaCover.CoverType, mediaCover.Extension);
+                }
+                else
+                {
+                    mediaCover.Url = _configFileProvider.UrlBase + @"/api/v1/mediacover/" + entityId + "/" + mediaCover.CoverType.ToString().ToLower() + GetExtension(mediaCover.CoverType, mediaCover.Extension);
                 }
             }
         }
