@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.Identity.Client" />
     <PackageReference Include="Polly" />
     <PackageReference Include="System.Drawing.Common" />
+    <PackageReference Include="System.Formats.Asn1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="System.Private.Uri" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" />
