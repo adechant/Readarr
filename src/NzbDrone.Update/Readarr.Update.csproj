@@ -7,7 +7,6 @@
     <PackageReference Include="DryIoc.dll" />
     <PackageReference Include="DryIoc.Microsoft.DependencyInjection" />
     <PackageReference Include="NLog" />
-    <PackageReference Include="SixLabors.ImageSharp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NzbDrone.Common\Readarr.Common.csproj" />

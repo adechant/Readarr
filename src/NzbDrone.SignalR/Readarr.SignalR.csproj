@@ -4,9 +4,6 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SixLabors.ImageSharp" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\NzbDrone.Core\Readarr.Core.csproj" />
   </ItemGroup>
 </Project>
