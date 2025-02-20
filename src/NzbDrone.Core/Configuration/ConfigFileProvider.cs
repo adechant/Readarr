@@ -53,6 +53,7 @@ namespace NzbDrone.Core.Configuration
         string SyslogServer { get; }
         int SyslogPort { get; }
         string SyslogLevel { get; }
+        string Theme { get; }
         string PostgresHost { get; }
         int PostgresPort { get; }
         string PostgresUser { get; }
@@ -60,7 +61,7 @@ namespace NzbDrone.Core.Configuration
         string PostgresMainDb { get; }
         string PostgresLogDb { get; }
         string PostgresCacheDb { get; }
-        string Theme { get; }
+        bool TrustCgnatIpAddresses { get; }
     }
 
     public class ConfigFileProvider : IConfigFileProvider
@@ -255,7 +256,7 @@ namespace NzbDrone.Core.Configuration
         public string UiFolder => BuildInfo.IsDebug ? Path.Combine("..", "UI") : "UI";
         public string InstanceName => _appOptions.InstanceName ?? GetValue("InstanceName", BuildInfo.AppName);
 
-        public bool UpdateAutomatically => _updateOptions.Automatically ?? GetValueBoolean("UpdateAutomatically", false, false);
+        public bool UpdateAutomatically => _updateOptions.Automatically ?? GetValueBoolean("UpdateAutomatically", OsInfo.IsWindows, false);
 
         public UpdateMechanism UpdateMechanism =>
             Enum.TryParse<UpdateMechanism>(_updateOptions.Mechanism, out var enumValue)
@@ -462,5 +463,7 @@ namespace NzbDrone.Core.Configuration
         {
             SetValue("ApiKey", GenerateApiKey());
         }
+
+        public bool TrustCgnatIpAddresses => _authOptions.TrustCgnatIpAddresses ?? GetValueBoolean("TrustCgnatIpAddresses", false, persist: false);
     }
 }

@@ -5,7 +5,7 @@
     "description": "Readarr API docs",
     "license": {
       "name": "GPL-3.0",
-      "url": "https://github.com/Readarr/Readarr/blob/develop/LICENSE"
+      "url": "https://github.com/Readarr/Readarr/blob/develop/LICENSE.md"
     },
     "version": "1.0.0"
   },
@@ -9445,6 +9445,11 @@
             "type": "string",
             "nullable": true
           },
+          "lastSearchTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "editions": {
             "type": "array",
             "items": {
@@ -10706,6 +10711,9 @@
           "backupRetention": {
             "type": "integer",
             "format": "int32"
+          },
+          "trustCgnatIpAddresses": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false

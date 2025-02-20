@@ -184,7 +184,7 @@ namespace NzbDrone.Core.ImportLists
                     report.BookGoodreadsId = remoteBook.ForeignBookId;
                     report.Book = remoteBook.Title;
                     report.Author ??= remoteBook.AuthorMetadata.Value.Name;
-                    report.AuthorGoodreadsId ??= remoteBook.AuthorMetadata.Value.Name;
+                    report.AuthorGoodreadsId ??= remoteBook.AuthorMetadata.Value.ForeignAuthorId;
                 }
                 catch (BookNotFoundException)
                 {
