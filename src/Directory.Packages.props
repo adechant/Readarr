@@ -11,7 +11,7 @@
     <PackageVersion Include="FluentAssertions" Version="5.10.3" />
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="2.1.7" />
     <PackageVersion Include="Microsoft.Identity.Client" Version="4.61.3" />
-    <PackageVersion Include="MimeKit" Version="4.7.1" />
+    <PackageVersion Include="MimeKit" Version="4.8.0" />
     <PackageVersion Include="IPAddressRange" Version="6.1.0" />
     <PackageVersion Include="Polly" Version="8.5.1" />
     <PackageVersion Include="Servarr.FluentMigrator.Runner" Version="3.3.2.9" />
@@ -23,7 +23,6 @@
     <PackageVersion Include="LazyCache" Version="2.4.0" />
     <PackageVersion Include="Mailkit" Version="4.8.0" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.35" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="2.1.7" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="6.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
