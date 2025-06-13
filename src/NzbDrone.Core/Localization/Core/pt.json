@@ -963,5 +963,9 @@
     "DockerUpdater": "atualize o contentor do Docker para receber a atualização",
     "ExternalUpdater": "O {appName} está definido para usar um mecanismo de atualização externo",
     "Script": "Script",
-    "UpdateAppDirectlyLoadError": "Não foi possível atualizar o {appName} diretamente,"
+    "UpdateAppDirectlyLoadError": "Não foi possível atualizar o {appName} diretamente,",
+    "AddNewAuthorRootFolderHelpText": "A subpasta \"{0}\" será criada automaticamente",
+    "AddRootFolder": "Adicionar pasta raiz",
+    "ThereWasAnErrorLoadingThisItem": "Houve um erro ao carregar este item",
+    "ThereWasAnErrorLoadingThisPage": "Houve um erro ao carregar esta página"
 }

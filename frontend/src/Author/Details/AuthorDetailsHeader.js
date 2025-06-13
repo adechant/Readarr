@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import TextTruncate from 'react-text-truncate';
 import AuthorPoster from 'Author/AuthorPoster';
+import { getAuthorStatusDetails } from 'Author/AuthorStatus';
 import HeartRating from 'Components/HeartRating';
 import Icon from 'Components/Icon';
 import Label from 'Components/Label';
@@ -11,7 +12,7 @@ import MonitorToggleButton from 'Components/MonitorToggleButton';
 import Popover from 'Components/Tooltip/Popover';
 import Tooltip from 'Components/Tooltip/Tooltip';
 import { icons, kinds, sizes, tooltipPositions } from 'Helpers/Props';
-import QualityProfileNameConnector from 'Settings/Profiles/Quality/QualityProfileNameConnector';
+import QualityProfileName from 'Settings/Profiles/Quality/QualityProfileName';
 import fonts from 'Styles/Variables/fonts';
 import formatBytes from 'Utilities/Number/formatBytes';
 import stripHtml from 'Utilities/String/stripHtml';
@@ -87,10 +88,10 @@ class AuthorDetailsHeader extends Component {
       titleWidth
     } = this.state;
 
+    const statusDetails = getAuthorStatusDetails(status);
+
     const fanartUrl = getFanartUrl(images);
     const marqueeWidth = titleWidth - (isSmallScreen ? 85 : 160);
-
-    const continuing = status === 'continuing';
 
     let bookFilesCountMessage = translate('BookFilesCountMessage');
 
@@ -213,7 +214,7 @@ class AuthorDetailsHeader extends Component {
 
                 <span className={styles.qualityProfileName}>
                   {
-                    <QualityProfileNameConnector
+                    <QualityProfileName
                       qualityProfileId={qualityProfileId}
                     />
                   }
@@ -236,16 +237,16 @@ class AuthorDetailsHeader extends Component {
 
               <Label
                 className={styles.detailsLabel}
-                title={continuing ? translate('ContinuingMoreBooksAreExpected') : translate('ContinuingNoAdditionalBooksAreExpected')}
+                title={statusDetails.message}
                 size={sizes.LARGE}
               >
                 <Icon
-                  name={continuing ? icons.AUTHOR_CONTINUING : icons.AUTHOR_ENDED}
+                  name={statusDetails.icon}
                   size={17}
                 />
 
                 <span className={styles.qualityProfileName}>
-                  {continuing ? 'Continuing' : 'Deceased'}
+                  {statusDetails.title}
                 </span>
               </Label>
 

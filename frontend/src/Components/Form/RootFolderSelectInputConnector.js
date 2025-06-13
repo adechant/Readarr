@@ -28,8 +28,7 @@ function createMapStateToProps() {
       if (includeNoChange) {
         values.unshift({
           key: 'noChange',
-          value: '',
-          name: translate('NoChange'),
+          value: translate('NoChange'),
           isDisabled: includeNoChangeDisabled,
           isMissing: false
         });
@@ -39,7 +38,6 @@ function createMapStateToProps() {
         values.push({
           key: '',
           value: '',
-          name: '',
           isDisabled: true,
           isHidden: true
         });
@@ -56,8 +54,7 @@ function createMapStateToProps() {
 
       values.push({
         key: ADD_NEW_KEY,
-        value: '',
-        name: 'Add a new path'
+        value: 'Add a new path'
       });
 
       return {
@@ -100,6 +97,27 @@ class RootFolderSelectInputConnector extends Component {
       if (defaultValue.key === ADD_NEW_KEY) {
         onChange({ name, value: '' });
       } else {
+        onChange({ name, value: defaultValue.key });
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      name,
+      value,
+      values,
+      onChange
+    } = this.props;
+
+    if (prevProps.values === values) {
+      return;
+    }
+
+    if (!value && values.length && values.some((v) => !!v.key && v.key !== ADD_NEW_KEY)) {
+      const defaultValue = values[0];
+
+      if (defaultValue.key !== ADD_NEW_KEY) {
         onChange({ name, value: defaultValue.key });
       }
     }

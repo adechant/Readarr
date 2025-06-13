@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using NzbDrone.Core.MediaCover;
 using NzbDrone.Core.MetadataSource;
+using NzbDrone.Core.Organizer;
 using Readarr.Http;
 
 namespace Readarr.Api.V1.Author
@@ -11,10 +12,14 @@ namespace Readarr.Api.V1.Author
     public class AuthorLookupController : Controller
     {
         private readonly ISearchForNewAuthor _searchProxy;
+        private readonly IBuildFileNames _fileNameBuilder;
+        private readonly IMapCoversToLocal _coverMapper;
 
-        public AuthorLookupController(ISearchForNewAuthor searchProxy)
+        public AuthorLookupController(ISearchForNewAuthor searchProxy, IBuildFileNames fileNameBuilder, IMapCoversToLocal coverMapper)
         {
             _searchProxy = searchProxy;
+            _fileNameBuilder = fileNameBuilder;
+            _coverMapper = coverMapper;
         }
 
         [HttpGet]
@@ -24,16 +29,22 @@ namespace Readarr.Api.V1.Author
             return MapToResource(searchResults).ToList();
         }
 
-        private static IEnumerable<AuthorResource> MapToResource(IEnumerable<NzbDrone.Core.Books.Author> author)
+        private IEnumerable<AuthorResource> MapToResource(IEnumerable<NzbDrone.Core.Books.Author> author)
         {
             foreach (var currentAuthor in author)
             {
                 var resource = currentAuthor.ToResource();
-                var poster = currentAuthor.Metadata.Value.Images.FirstOrDefault(c => c.CoverType == MediaCoverTypes.Poster);
+
+                _coverMapper.ConvertToLocalUrls(resource.Id, MediaCoverEntity.Author, resource.Images);
+
+                var poster = resource.Images.FirstOrDefault(c => c.CoverType == MediaCoverTypes.Poster);
+
                 if (poster != null)
                 {
-                    resource.RemotePoster = poster.Url;
+                    resource.RemotePoster = poster.RemoteUrl;
                 }
+
+                resource.Folder = _fileNameBuilder.GetAuthorFolder(currentAuthor);
 
                 yield return resource;
             }

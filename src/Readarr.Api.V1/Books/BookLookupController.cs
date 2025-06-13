@@ -11,10 +11,12 @@ namespace Readarr.Api.V1.Books
     public class BookLookupController : Controller
     {
         private readonly ISearchForNewBook _searchProxy;
+        private readonly IMapCoversToLocal _coverMapper;
 
-        public BookLookupController(ISearchForNewBook searchProxy)
+        public BookLookupController(ISearchForNewBook searchProxy, IMapCoversToLocal coverMapper)
         {
             _searchProxy = searchProxy;
+            _coverMapper = coverMapper;
         }
 
         [HttpGet]
@@ -24,15 +26,19 @@ namespace Readarr.Api.V1.Books
             return MapToResource(searchResults).ToList();
         }
 
-        private static IEnumerable<BookResource> MapToResource(IEnumerable<NzbDrone.Core.Books.Book> books)
+        private IEnumerable<BookResource> MapToResource(IEnumerable<NzbDrone.Core.Books.Book> books)
         {
             foreach (var currentBook in books)
             {
                 var resource = currentBook.ToResource();
-                var cover = currentBook.Editions.Value.Single(x => x.Monitored).Images.FirstOrDefault(c => c.CoverType == MediaCoverTypes.Cover);
+
+                _coverMapper.ConvertToLocalUrls(resource.Id, MediaCoverEntity.Book, resource.Images);
+
+                var cover = resource.Images.FirstOrDefault(c => c.CoverType == MediaCoverTypes.Cover);
+
                 if (cover != null)
                 {
-                    resource.RemoteCover = cover.Url;
+                    resource.RemoteCover = cover.RemoteUrl;
                 }
 
                 yield return resource;

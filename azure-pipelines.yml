@@ -9,7 +9,7 @@ variables:
   testsFolder: './_tests'
   yarnCacheFolder: $(Pipeline.Workspace)/.yarn
   nugetCacheFolder: $(Pipeline.Workspace)/.nuget/packages
-  majorVersion: '0.4.11'
+  majorVersion: '0.4.18'
   minorVersion: $[counter('minorVersion', 1)]
   readarrVersion: '$(majorVersion).$(minorVersion)'
   buildName: '$(Build.SourceBranchName).$(readarrVersion)'
@@ -19,7 +19,7 @@ variables:
   nodeVersion: '20.X'
   innoVersion: '6.2.0'
   windowsImage: 'windows-2022'
-  linuxImage: 'ubuntu-20.04'
+  linuxImage: 'ubuntu-22.04'
   macImage: 'macOS-13'
 
 trigger:

@@ -671,5 +671,8 @@
     "InstallLatest": "Instalați cel mai recent",
     "OnLatestVersion": "Cea mai recentă versiune a {appName} este deja instalată",
     "Script": "Script",
-    "UpdateAppDirectlyLoadError": "Imposibil de actualizat direct {appName},"
+    "UpdateAppDirectlyLoadError": "Imposibil de actualizat direct {appName},",
+    "Unknown": "Necunoscut",
+    "AddRootFolder": "Adăugați folderul rădăcină",
+    "AddNewAuthorRootFolderHelpText": "Subfolderul „{0}” va fi creat automat"
 }
