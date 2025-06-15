@@ -383,5 +383,25 @@ namespace NzbDrone.Core.MediaCover
                 _diskProvider.DeleteFolder(path, true);
             }
         }
+
+        public void ConvertToAPIUrls(int entityId, MediaCoverEntity coverEntity, IEnumerable<MediaCover> covers)
+        {
+            foreach (var mediaCover in covers)
+            {
+                if (mediaCover.CoverType == MediaCoverTypes.Unknown)
+                {
+                    continue;
+                }
+
+                if (coverEntity == MediaCoverEntity.Book)
+                {
+                    mediaCover.Url = _configFileProvider.UrlBase + @"/api/v1/mediacover/book/" + entityId + "/" + mediaCover.CoverType.ToString().ToLower() + GetExtension(mediaCover.CoverType, mediaCover.Extension);
+                }
+                else
+                {
+                    mediaCover.Url = _configFileProvider.UrlBase + @"/api/v1/mediacover/" + entityId + "/" + mediaCover.CoverType.ToString().ToLower() + GetExtension(mediaCover.CoverType, mediaCover.Extension);
+                }
+            }
+        }
     }
 }
