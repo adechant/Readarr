@@ -126,26 +126,6 @@ namespace NzbDrone.Core.MediaCover
             }
         }
 
-        public void ConvertToAPIUrls(int entityId, MediaCoverEntity coverEntity, IEnumerable<MediaCover> covers)
-        {
-            foreach (var mediaCover in covers)
-            {
-                if (mediaCover.CoverType == MediaCoverTypes.Unknown)
-                {
-                    continue;
-                }
-
-                if (coverEntity == MediaCoverEntity.Book)
-                {
-                    mediaCover.Url = _configFileProvider.UrlBase + @"/api/v1/mediacover/book/" + entityId + "/" + mediaCover.CoverType.ToString().ToLower() + GetExtension(mediaCover.CoverType, mediaCover.Extension);
-                }
-                else
-                {
-                    mediaCover.Url = _configFileProvider.UrlBase + @"/api/v1/mediacover/" + entityId + "/" + mediaCover.CoverType.ToString().ToLower() + GetExtension(mediaCover.CoverType, mediaCover.Extension);
-                }
-            }
-        }
-
         private string GetAuthorCoverPath(int authorId)
         {
             return Path.Combine(_coverRootFolder, authorId.ToString());
