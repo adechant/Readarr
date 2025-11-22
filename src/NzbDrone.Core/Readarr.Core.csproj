@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Microsoft.Identity.Client" />
     <PackageReference Include="MimeKit" />
+    <PackageReference Include="Octokit" />
     <PackageReference Include="Polly" />
     <PackageReference Include="SixLabors.ImageSharp" />
     <PackageReference Include="System.Drawing.Common" />
@@ -30,6 +31,12 @@
     <PackageReference Include="NLog" />
     <PackageReference Include="NLog.Targets.Syslog" />
     <PackageReference Include="Npgsql" />
+    <PackageReference Include="OpenTelemetry" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
     <PackageReference Include="RestSharp" />
     <PackageReference Include="System.IO.Abstractions" />
     <PackageReference Include="System.Text.RegularExpressions" />
