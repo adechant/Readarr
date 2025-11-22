@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ using NzbDrone.Common.Extensions;
 using NzbDrone.Core.AuthorStats;
 using NzbDrone.Core.Books;
 using NzbDrone.Core.Books.Events;
+using NzbDrone.Core.Datastore;
 using NzbDrone.Core.Datastore.Events;
 using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Download;
@@ -25,6 +25,7 @@ using NzbDrone.Core.Validation.Paths;
 using NzbDrone.Http.REST.Attributes;
 using NzbDrone.SignalR;
 using Readarr.Http;
+using Readarr.Http.Extensions;
 
 namespace Readarr.Api.V1.Books
 {
@@ -41,8 +42,7 @@ namespace Readarr.Api.V1.Books
         protected readonly IAuthorService _authorService;
         protected readonly IEditionService _editionService;
         protected readonly IAddBookService _addBookService;
-        private readonly IDiskProvider _diskProvider;
-        private readonly IManualImportService _manualImportService;
+        private readonly IBookRepository _bookRepository;
 
         public BookController(IManualImportService manualImportService,
                           IDiskProvider diskProvider,
@@ -56,16 +56,15 @@ namespace Readarr.Api.V1.Books
                           IUpgradableSpecification upgradableSpecification,
                           IBroadcastSignalRMessage signalRBroadcaster,
                           QualityProfileExistsValidator qualityProfileExistsValidator,
-                          MetadataProfileExistsValidator metadataProfileExistsValidator)
+                          MetadataProfileExistsValidator metadataProfileExistsValidator,
+                          IBookRepository bookRepository)
 
         : base(bookService, seriesBookLinkService, authorStatisticsService, coverMapper, upgradableSpecification, signalRBroadcaster)
         {
             _authorService = authorService;
             _editionService = editionService;
             _addBookService = addBookService;
-            _diskProvider = diskProvider;
-            _manualImportService = manualImportService;
-
+            _bookRepository = bookRepository;
             PostValidator.RuleFor(s => s.ForeignBookId).NotEmpty();
             PostValidator.RuleFor(s => s.Author.QualityProfileId).SetValidator(qualityProfileExistsValidator);
             PostValidator.RuleFor(s => s.Author.MetadataProfileId).SetValidator(metadataProfileExistsValidator);
@@ -74,49 +73,38 @@ namespace Readarr.Api.V1.Books
         }
 
         [HttpGet]
-        public List<BookResource> GetBooks([FromQuery]int? authorId,
-            [FromQuery]List<int> bookIds,
-            [FromQuery]string titleSlug,
-            [FromQuery]bool includeAllAuthorBooks = false)
+        public object GetBooks([FromQuery] int? authorId,
+            [FromQuery] List<int> bookIds,
+            [FromQuery] string titleSlug,
+            [FromQuery] bool includeAllAuthorBooks = false,
+            [FromQuery] PagingRequestResource paging = null)
         {
-            if (!authorId.HasValue && !bookIds.Any() && titleSlug.IsNullOrWhiteSpace())
+            if (authorId.HasValue || bookIds.Any() || titleSlug.IsNotNullOrWhiteSpace())
             {
-                var editionTask = Task.Run(() => _editionService.GetAllMonitoredEditions());
-                var metadataTask = Task.Run(() => _authorService.GetAllAuthors());
-                var books = _bookService.GetAllBooks();
-
-                var editions = editionTask.GetAwaiter().GetResult().GroupBy(x => x.BookId).ToDictionary(x => x.Key, y => y.ToList());
-
-                var authors = metadataTask.GetAwaiter().GetResult().ToDictionary(x => x.AuthorMetadataId);
-
-                foreach (var book in books)
-                {
-                    book.Author = authors[book.AuthorMetadataId];
-                    if (editions.TryGetValue(book.Id, out var bookEditions))
-                    {
-                        book.Editions = bookEditions;
-                    }
-                    else
-                    {
-                        book.Editions = new List<Edition>();
-                    }
-                }
-
-                return MapToResource(books, false);
+                return GetBooksWithSpecificParameters(authorId, bookIds, titleSlug, includeAllAuthorBooks);
             }
 
+            if (paging != null && paging.Page.HasValue && paging.PageSize.HasValue)
+            {
+                return GetBooksWithPagination(paging);
+            }
+
+            // Fallback to original behavior for backward compatibility
+            return GetBooksFallback();
+        }
+
+        private List<BookResource> GetBooksWithSpecificParameters(int? authorId, List<int> bookIds, string titleSlug, bool includeAllAuthorBooks)
+        {
             if (authorId.HasValue)
             {
                 var books = _bookService.GetBooksByAuthor(authorId.Value);
 
-                var author = _authorService.GetAuthor(authorId.Value);
                 var editions = _editionService.GetEditionsByAuthor(authorId.Value)
                     .GroupBy(x => x.BookId)
                     .ToDictionary(x => x.Key, y => y.ToList());
 
                 foreach (var book in books)
                 {
-                    book.Author = author;
                     if (editions.TryGetValue(book.Id, out var bookEditions))
                     {
                         book.Editions = bookEditions;
@@ -150,6 +138,67 @@ namespace Readarr.Api.V1.Books
             }
 
             return MapToResource(_bookService.GetBooks(bookIds), false);
+        }
+
+        // Fallback path for legacy clients and full library fetch
+        private List<BookResource> GetBooksFallback()
+        {
+            var booksWithData = _bookRepository.GetAllBooksWithRelatedData();
+            var resources = new List<BookResource>(booksWithData.Count);
+
+            var authorStats = _authorStatisticsService.AuthorStatistics();
+            var bookStatsDict = authorStats.SelectMany(x => x.BookStatistics).ToDictionary(x => x.BookId);
+            foreach (var b in booksWithData)
+            {
+                var resource = new BookResource
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    AuthorId = b.AuthorId,
+                    AuthorTitle = $"{b.AuthorNameLastFirst} {b.Title}",
+                    ForeignBookId = b.ForeignBookId,
+                    ForeignEditionId = b.SelectedEditionForeignEditionId,
+                    TitleSlug = b.TitleSlug,
+                    Monitored = b.Monitored,
+                    AnyEditionOk = b.AnyEditionOk,
+                    Ratings = b.SelectedEditionRatings,
+                    ReleaseDate = b.ReleaseDate,
+                    PageCount = b.SelectedEditionPageCount,
+                    Genres = b.Genres,
+                    Images = b.SelectedEditionImages?.ConvertAll(x => new MediaCover
+                    {
+                        Url = x.Url,
+                        CoverType = x.CoverType,
+                        RemoteUrl = x.RemoteUrl
+                    }) ?? new List<MediaCover>(),
+                    Links = b.SelectedEditionLinks,
+                    Added = b.Added,
+                    SeriesTitle = b.SeriesTitle,
+                    Disambiguation = b.SelectedEditionDisambiguation
+                };
+
+                if (bookStatsDict.TryGetValue(b.Id, out var stats))
+                {
+                    resource.Statistics = stats.ToResource();
+                }
+
+                resources.Add(resource);
+            }
+
+            return resources;
+        }
+
+        private PagingResource<BookResource> GetBooksWithPagination(PagingRequestResource paging)
+        {
+            var pagingResource = new PagingResource<BookResource>(paging);
+            var pagingSpec = pagingResource.MapToPagingSpec<BookResource, Book>();
+
+            var result = pagingSpec.ApplyToPage(_bookService.GetPaged, book =>
+            {
+                return MapToResource(new List<Book> { book }, false).First();
+            });
+
+            return result;
         }
 
         [HttpGet("{id:int}/overview")]
@@ -251,7 +300,7 @@ namespace Readarr.Api.V1.Books
         }
 
         [HttpPut("monitor")]
-        public IActionResult SetBooksMonitored([FromBody]BooksMonitoredResource resource)
+        public IActionResult SetBooksMonitored([FromBody] BooksMonitoredResource resource)
         {
             _bookService.SetMonitored(resource.BookIds, resource.Monitored);
 
