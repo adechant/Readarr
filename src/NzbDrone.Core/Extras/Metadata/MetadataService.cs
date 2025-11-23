@@ -66,7 +66,7 @@ namespace NzbDrone.Core.Extras.Metadata
 
             if (!_diskProvider.FolderExists(author.Path))
             {
-                _logger.Info("Author folder does not exist, skipping metadata creation");
+                _logger.Info("Author folder does not exist {0}, skipping metadata creation", author.Path);
                 return Enumerable.Empty<MetadataFile>();
             }
 

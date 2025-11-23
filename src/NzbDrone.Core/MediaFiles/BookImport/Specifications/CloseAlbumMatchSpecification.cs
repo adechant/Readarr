@@ -36,8 +36,9 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Specifications
             // otherwise importing existing files in library
             else
             {
-                // get book distance ignoring whether tracks are missing
-                dist = item.Distance.NormalizedDistanceExcluding(new List<string> { "missing_tracks", "unmatched_tracks" });
+                // get book distance ignoring whether tracks are missing, also ignoring isbn/asin/publisher
+                // since users should know what's in the directory they're trying to import
+                dist = item.Distance.NormalizedDistanceExcluding(new List<string> { "missing_tracks", "unmatched_tracks", "isbn", "asin", "publisher" });
                 reasons = item.Distance.Reasons;
                 if (dist > _bookThreshold)
                 {

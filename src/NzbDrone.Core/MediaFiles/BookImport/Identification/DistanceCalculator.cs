@@ -165,8 +165,9 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
                 if (!isAudio)
                 {
                     // text books should prefer ebook formats
-                    dist.AddBool("ebook_format", !EbookFormats.Contains(edition.Format));
-                    Logger.Trace($"ebook_format: {edition.Format} - {!EbookFormats.Contains(edition.Format)}; {dist.NormalizedDistance()}");
+                    // but we don't really care since we're usually only comparing against the first edition found...
+                    //dist.AddBool("ebook_format", !EbookFormats.Contains(edition.Format));
+                    //Logger.Trace($"ebook_format: {edition.Format} - {!EbookFormats.Contains(edition.Format)}; {dist.NormalizedDistance()}");
 
                     // text books should not match audio entries
                     dist.AddBool("wrong_format", AudiobookFormats.Contains(edition.Format));
@@ -224,6 +225,21 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
                     {
                         authors.Add(split.Reverse().ConcatToString(" "));
                     }
+                }
+            }
+
+            //If Initials are used as the first and second name i.e. R. F. Kuang
+            //Reomove the white space between the initials.
+            foreach (var author in fileAuthors)
+            {
+                if (author.Count(c => c == '.') >= 2)
+                {
+                    var pattern = @"(?<=\.) (?=[A-Za-z]\.)";
+
+                    // Replace the targeted space with an empty string ("")
+                    var formattedAuthor = Regex.Replace(author, pattern, "");
+
+                    authors.Add(formattedAuthor);
                 }
             }
 
