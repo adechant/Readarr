@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,6 @@ using NzbDrone.Common.Extensions;
 using NzbDrone.Core.AuthorStats;
 using NzbDrone.Core.Books;
 using NzbDrone.Core.Books.Events;
-using NzbDrone.Core.Datastore;
 using NzbDrone.Core.Datastore.Events;
 using NzbDrone.Core.DecisionEngine.Specifications;
 using NzbDrone.Core.Download;
@@ -43,6 +43,8 @@ namespace Readarr.Api.V1.Books
         protected readonly IEditionService _editionService;
         protected readonly IAddBookService _addBookService;
         private readonly IBookRepository _bookRepository;
+        private readonly IDiskProvider _diskProvider;
+        private readonly IManualImportService _manualImportService;
 
         public BookController(IManualImportService manualImportService,
                           IDiskProvider diskProvider,
@@ -65,6 +67,8 @@ namespace Readarr.Api.V1.Books
             _editionService = editionService;
             _addBookService = addBookService;
             _bookRepository = bookRepository;
+            _diskProvider = diskProvider;
+            _manualImportService = manualImportService;
             PostValidator.RuleFor(s => s.ForeignBookId).NotEmpty();
             PostValidator.RuleFor(s => s.Author.QualityProfileId).SetValidator(qualityProfileExistsValidator);
             PostValidator.RuleFor(s => s.Author.MetadataProfileId).SetValidator(metadataProfileExistsValidator);
