@@ -211,7 +211,16 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
                 var allLocalTracks = localBookRelease.LocalBooks.Concat(extraTracks).DistinctBy(x => x.Path).ToList();
 
                 var distance = DistanceCalculator.BookDistance(allLocalTracks, release);
-                var currDistance = distance.NormalizedDistance();
+                var currDistance = 1.0;
+
+                if (localBookRelease.NewDownload)
+                {
+                    currDistance = distance.NormalizedDistance();
+                }
+                else
+                {
+                    currDistance = distance.NormalizedDistanceExcluding(new List<string> { "missing_tracks", "unmatched_tracks", "isbn", "isbn_missing", "edition_isbn_missing", "asin", "asin_missing", "edition_asin_missing", "publisher", "year" });
+                }
 
                 rwatch.Stop();
                 _logger.Debug("Release {0} has distance {1} vs best distance {2} [{3}ms]",
