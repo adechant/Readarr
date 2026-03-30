@@ -27,7 +27,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Manual
     public interface IManualImportService
     {
         List<ManualImportItem> GetMediaFiles(string path, string downloadId, Author author, FilterFilesType filter, bool replaceExistingFiles);
-        List<ManualImportItem> ProcessFile(string path, Book book, Author author, FilterFilesType filter, bool replaceExistingFiles);
+        List<ManualImportItem> ProcessFile(string path, Book book, Author author, FilterFilesType filter, bool replaceExistingFiles, bool forceImport = false);
         List<ManualImportItem> UpdateItems(List<ManualImportItem> item);
     }
 
@@ -88,7 +88,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Manual
             _logger = logger;
         }
 
-        public List<ManualImportItem> ProcessFile(string path, Book book, Author author, FilterFilesType filter, bool replaceExistingFiles)
+        public List<ManualImportItem> ProcessFile(string path, Book book, Author author, FilterFilesType filter, bool replaceExistingFiles, bool forceImport = false)
         {
             if (!_diskProvider.FolderExists(path))
             {
@@ -113,7 +113,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Manual
                 idOverrides.Book = book;
                 idOverrides.Author = author;
 
-                var decision = _importDecisionMaker.GetImportDecisions(files, idOverrides, null, config);
+                var decision = _importDecisionMaker.GetImportDecisions(files, idOverrides, null, config, forceImport);
                 var result = MapItem(decision.First(), null, replaceExistingFiles, false);
                 _importApprovedBooks.Import(decision, false);
 

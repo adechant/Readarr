@@ -218,7 +218,7 @@ namespace Readarr.Api.V1.Books
 
         [HttpPost("{id:int}/upload")]
         [RequestFormLimits(MultipartBodyLengthLimit = 500000000)]
-        public async Task<IActionResult> PutBookFileAsync(int id, IFormFile file)
+        public async Task<IActionResult> PutBookFileAsync(int id, IFormFile file, [FromQuery] bool forceImport = false)
         {
             if (file == null || file.Length == 0)
             {
@@ -255,7 +255,7 @@ namespace Readarr.Api.V1.Books
                 await file.CopyToAsync(fileStream);
             }
 
-            var list = _manualImportService.ProcessFile(combined, book, bookAuthor, FilterFilesType.None, false);
+            var list = _manualImportService.ProcessFile(combined, book, bookAuthor, FilterFilesType.None, false, forceImport);
             if (list.Empty())
             {
                 //delete the directory after manual import

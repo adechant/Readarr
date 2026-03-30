@@ -18,7 +18,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport
 {
     public interface IMakeImportDecision
     {
-        List<ImportDecision<LocalBook>> GetImportDecisions(List<IFileInfo> musicFiles, IdentificationOverrides idOverrides, ImportDecisionMakerInfo itemInfo, ImportDecisionMakerConfig config);
+        List<ImportDecision<LocalBook>> GetImportDecisions(List<IFileInfo> musicFiles, IdentificationOverrides idOverrides, ImportDecisionMakerInfo itemInfo, ImportDecisionMakerConfig config, bool forceImportDecision = false);
     }
 
     public class IdentificationOverrides
@@ -143,7 +143,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport
             return Tuple.Create(localTracks, decisions);
         }
 
-        public List<ImportDecision<LocalBook>> GetImportDecisions(List<IFileInfo> musicFiles, IdentificationOverrides idOverrides, ImportDecisionMakerInfo itemInfo, ImportDecisionMakerConfig config)
+        public List<ImportDecision<LocalBook>> GetImportDecisions(List<IFileInfo> musicFiles, IdentificationOverrides idOverrides, ImportDecisionMakerInfo itemInfo, ImportDecisionMakerConfig config, bool forceImportDecision = false)
         {
             idOverrides = idOverrides ?? new IdentificationOverrides();
             itemInfo = itemInfo ?? new ImportDecisionMakerInfo();
@@ -167,7 +167,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport
 
                 foreach (var localTrack in release.LocalBooks)
                 {
-                    if (releaseDecision.Approved)
+                    if (releaseDecision.Approved || forceImportDecision)
                     {
                         decisions.AddIfNotNull(GetDecision(localTrack, itemInfo.DownloadClientItem));
                     }
