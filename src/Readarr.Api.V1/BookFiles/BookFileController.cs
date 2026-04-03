@@ -119,7 +119,8 @@ namespace Readarr.Api.V1.BookFiles
             {
                 var bookFile = _mediaFileService.Get(id);
                 var filePath = bookFile.Path;
-                Response.Headers.Add("content-disposition", string.Format("attachment;filename={0}", PathExtensions.BaseName(filePath)));
+                var baseName = PathExtensions.BaseName(filePath);
+                Response.Headers.Add("content-disposition", string.Format("attachment;filename=\"{0}\"", baseName));
                 return new PhysicalFileResult(filePath, GetContentType(filePath));
             }
             catch
