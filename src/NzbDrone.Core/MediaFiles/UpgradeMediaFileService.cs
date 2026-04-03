@@ -50,7 +50,10 @@ namespace NzbDrone.Core.MediaFiles
             var existingFiles = new System.Collections.Generic.List<BookFile>();
             if (localBook.Book != null)
             {
-                existingFiles = localBook.Book.BookFiles.Value;
+                if (localBook.Book.BookFiles != null)
+                {
+                    existingFiles = localBook.Book.BookFiles.Value;
+                }
             }
 
             var rootFolderPath = _diskProvider.GetParentFolder(localBook.Author.Path);
