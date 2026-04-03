@@ -230,7 +230,6 @@ namespace NzbDrone.Core.MediaFiles.BookImport
 
                     if (!localTrack.ExistingFile)
                     {
-                        _logger.Trace("No existing file. Moving {0} to {1}", localTrack, bookFile);
                         bookFile.SceneName = GetSceneReleaseName(downloadClientItem);
                         var moveResult = _bookFileUpgrader.UpgradeBookFile(bookFile, localTrack, copyOnly);
                         oldFiles = moveResult.OldFiles;
