@@ -1,7 +1,7 @@
-import { push } from 'connected-react-router';
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom'; // Added
 import { createSelector } from 'reselect';
 import { deleteBook } from 'Store/Actions/bookActions';
 import createBookSelector from 'Store/Selectors/createBookSelector';
@@ -10,22 +10,16 @@ import DeleteBookModalContent from './DeleteBookModalContent';
 function createMapStateToProps() {
   return createSelector(
     createBookSelector(),
-    (book) => {
-      return book;
-    }
+    (book) => book
   );
 }
 
+// 1. Removed 'push' from mapDispatchToProps
 const mapDispatchToProps = {
-  push,
   deleteBook
 };
 
 class DeleteBookModalContentConnector extends Component {
-
-  //
-  // Listeners
-
   onDeletePress = (deleteFiles, addImportListExclusion) => {
     this.props.deleteBook({
       id: this.props.bookId,
@@ -35,11 +29,9 @@ class DeleteBookModalContentConnector extends Component {
 
     this.props.onModalClose(true);
 
-    this.props.push(`${window.Readarr.urlBase}/author/${this.props.authorSlug}`);
+    // 2. Use this.props.navigate instead of this.props.push
+    this.props.navigate(`${window.Readarr.urlBase}/author/${this.props.authorSlug}`);
   };
-
-  //
-  // Render
 
   render() {
     return (
@@ -54,9 +46,15 @@ class DeleteBookModalContentConnector extends Component {
 DeleteBookModalContentConnector.propTypes = {
   bookId: PropTypes.number.isRequired,
   authorSlug: PropTypes.string.isRequired,
-  push: PropTypes.func.isRequired,
+  navigate: PropTypes.func.isRequired, // Updated
   onModalClose: PropTypes.func.isRequired,
   deleteBook: PropTypes.func.isRequired
 };
 
-export default connect(createMapStateToProps, mapDispatchToProps)(DeleteBookModalContentConnector);
+// 3. Create the wrapper to inject the navigate hook
+const ConnectedComponent = connect(createMapStateToProps, mapDispatchToProps)(DeleteBookModalContentConnector);
+
+export default function DeleteBookModalWrapper(props) {
+  const navigate = useNavigate();
+  return <ConnectedComponent {...props} navigate={navigate} />;
+}

@@ -1,24 +1,25 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import DocumentTitle from 'react-document-title';
 import ErrorBoundary from 'Components/Error/ErrorBoundary';
 import PageContentError from './PageContentError';
 import styles from './PageContent.css';
 
 function PageContent(props) {
-  const {
-    className,
-    title,
-    children
-  } = props;
+  const { className = styles.content, title, children } = props;
+
+  // Define the dynamic title string
+  const fullTitle = title
+    ? `${title} - ${window.Readarr.instanceName}`
+    : window.Readarr.instanceName;
 
   return (
     <ErrorBoundary errorComponent={PageContentError}>
-      <DocumentTitle title={title ? `${title} - ${window.Readarr.instanceName}` : window.Readarr.instanceName}>
-        <div className={className}>
-          {children}
-        </div>
-      </DocumentTitle>
+      {/* React 19 Native Metadata: Automatically hoisted to <head> */}
+      <title>{fullTitle}</title>
+
+      <div className={className}>
+        {children}
+      </div>
     </ErrorBoundary>
   );
 }
@@ -29,8 +30,5 @@ PageContent.propTypes = {
   children: PropTypes.node.isRequired
 };
 
-PageContent.defaultProps = {
-  className: styles.content
-};
 
 export default PageContent;

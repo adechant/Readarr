@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import { clearSearchResults, getSearchResults } from 'Store/Actions/searchActions';
 import { fetchRootFolders } from 'Store/Actions/settingsActions';
+import { useLocation } from 'react-router-dom';
 import parseUrl from 'Utilities/String/parseUrl';
 import AddNewItem from './AddNewItem';
 
@@ -11,9 +12,9 @@ function createMapStateToProps() {
   return createSelector(
     (state) => state.search,
     (state) => state.authors.items.length,
-    (state) => state.router.location,
+    (_, ownProps) => ownProps.location,
     (search, existingAuthorsCount, location) => {
-      const { params } = parseUrl(location.search);
+      const { params } = parseUrl(location ? location.search : '');
 
       return {
         ...search,
@@ -101,4 +102,11 @@ AddNewItemConnector.propTypes = {
   fetchRootFolders: PropTypes.func.isRequired
 };
 
-export default connect(createMapStateToProps, mapDispatchToProps)(AddNewItemConnector);
+const ConnectedAddNewItemConnector = connect(createMapStateToProps, mapDispatchToProps)(AddNewItemConnector);
+
+function AddNewItemConnectorWrapper(props) {
+  const location = useLocation();
+  return <ConnectedAddNewItemConnector {...props} location={location} />;
+}
+
+export default AddNewItemConnectorWrapper;

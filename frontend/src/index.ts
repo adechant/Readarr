@@ -1,10 +1,9 @@
 import './polyfills';
-import 'Styles/globals.css';
+import './Styles/globals.css';
 import './index.css';
 
-const initializeUrl = `${
-  window.Readarr.urlBase
-}/initialize.json?t=${Date.now()}`;
+const initializeUrl = `${window.Readarr.urlBase
+  }/initialize.json?t=${Date.now()}`;
 const response = await fetch(initializeUrl);
 
 window.Readarr = await response.json();

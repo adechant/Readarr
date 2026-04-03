@@ -8,7 +8,7 @@ import styles from './NoAuthor.css';
 function NoAuthor(props) {
   const {
     totalItems,
-    itemType
+    itemType = 'authors'
   } = props;
 
   if (totalItems > 0) {
@@ -50,11 +50,7 @@ function NoAuthor(props) {
 
 NoAuthor.propTypes = {
   totalItems: PropTypes.number.isRequired,
-  itemType: PropTypes.string.isRequired
-};
-
-NoAuthor.defaultProps = {
-  itemType: 'authors'
+  itemType: PropTypes.string
 };
 
 export default NoAuthor;

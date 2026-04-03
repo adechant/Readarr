@@ -1,27 +1,35 @@
 {
   "compilerOptions": {
-      "target": "esnext",
-      "allowJs": true,
-      "checkJs": false,
-      "baseUrl": "src",
-      "jsx": "react",
-      "module": "esnext",
-      "moduleResolution": "node",
-      "noEmit": true,
-      "esModuleInterop": true,
-      "typeRoots": ["node_modules/@types", "typings"],
-      "paths": {
-          "*": [
-              "*"
-          ]
-      },
-      "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "target": "esnext",
+    "allowJs": true,
+    "checkJs": false,
+    "baseUrl": "src",
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "esModuleInterop": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "typings"
+    ],
+    "paths": {
+      "*": [
+        "*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules"
+      }
+    ]
   },
   "include": [
-      "./src/**/*",
-      "./.eslintrc.js",
-      "./build/webpack.config.js",
-      "./typings/*.ts",
+    "./src/**/*",
+    "./.eslintrc.js",
+    "./build/webpack.config.js",
+    "./typings/*.ts",
+    "./globals.d.ts",
   ],
   "exclude": [
     "node_modules"

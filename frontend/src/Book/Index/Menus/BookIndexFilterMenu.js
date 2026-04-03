@@ -10,7 +10,8 @@ function BookIndexFilterMenu(props) {
     filters,
     customFilters,
     isDisabled,
-    onFilterSelect
+    onFilterSelect,
+    showCustomFilters = false
   } = props;
 
   return (
@@ -32,10 +33,6 @@ BookIndexFilterMenu.propTypes = {
   customFilters: PropTypes.arrayOf(PropTypes.object).isRequired,
   isDisabled: PropTypes.bool.isRequired,
   onFilterSelect: PropTypes.func.isRequired
-};
-
-BookIndexFilterMenu.defaultProps = {
-  showCustomFilters: false
 };
 
 export default BookIndexFilterMenu;

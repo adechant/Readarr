@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from 'Helpers/Hooks/useDispatch';
 import { IndexerAppState } from 'App/State/SettingsAppState';
 import Alert from 'Components/Alert';
 import Button from 'Components/Link/Button';
@@ -96,10 +96,10 @@ function ManageIndexersModalContent(props: ManageIndexersModalContentProps) {
     items,
     sortKey,
     sortDirection,
-  }: IndexerAppState = useSelector(
+  }: IndexerAppState = useAppSelector(
     createClientSideCollectionSelector('settings.indexers')
   );
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd-multi-backend';
+import { HTML5toTouch } from 'rdndmb-html5-to-touch';
 import PageContent from 'Components/Page/PageContent';
 import PageContentBody from 'Components/Page/PageContentBody';
 import SettingsToolbarConnector from 'Settings/SettingsToolbarConnector';
@@ -20,7 +20,7 @@ class CustomFormatSettingsConnector extends Component {
         />
 
         <PageContentBody>
-          <DndProvider backend={HTML5Backend}>
+          <DndProvider options={HTML5toTouch}>
             <CustomFormatsConnector />
           </DndProvider>
         </PageContentBody>

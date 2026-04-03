@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from 'Helpers/Hooks/useDispatch';
 import AppState from 'App/State/AppState';
 import FieldSet from 'Components/FieldSet';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
@@ -47,8 +47,8 @@ const columns = [
 ];
 
 export default function QueuedTasks() {
-  const dispatch = useDispatch();
-  const { isFetching, isPopulated, items } = useSelector(
+  const dispatch = useAppDispatch();
+  const { isFetching, isPopulated, items } = useAppSelector(
     (state: AppState) => state.commands
   );
 

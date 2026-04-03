@@ -71,7 +71,7 @@ class Page extends Component {
   render() {
     const {
       className,
-      location,
+      router: { location },
       children,
       isSmallScreen,
       isSidebarVisible,
@@ -122,7 +122,7 @@ class Page extends Component {
 
 Page.propTypes = {
   className: PropTypes.string,
-  location: locationShape.isRequired,
+  router: PropTypes.object.isRequired,
   children: PropTypes.node.isRequired,
   isSmallScreen: PropTypes.bool.isRequired,
   isSidebarVisible: PropTypes.bool.isRequired,

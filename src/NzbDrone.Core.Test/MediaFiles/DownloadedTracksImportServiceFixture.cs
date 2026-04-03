@@ -84,7 +84,7 @@ namespace NzbDrone.Core.Test.MediaFiles
             imported.Add(new ImportDecision<LocalBook>(localTrack));
 
             Mocker.GetMock<IMakeImportDecision>()
-                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>()))
+                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>(), false))
                   .Returns(imported);
 
             Mocker.GetMock<IImportApprovedBooks>()
@@ -130,7 +130,7 @@ namespace NzbDrone.Core.Test.MediaFiles
             Subject.ProcessRootFolder(DiskProvider.GetDirectoryInfo(_droneFactory));
 
             Mocker.GetMock<IMakeImportDecision>()
-                  .Verify(c => c.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>()),
+                  .Verify(c => c.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>(), false),
                           Times.Once());
 
             VerifyImport();
@@ -181,7 +181,7 @@ namespace NzbDrone.Core.Test.MediaFiles
             imported.Add(new ImportDecision<LocalBook>(localTrack));
 
             Mocker.GetMock<IMakeImportDecision>()
-                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>()))
+                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>(), false))
                   .Returns(imported);
 
             Mocker.GetMock<IImportApprovedBooks>()
@@ -238,7 +238,7 @@ namespace NzbDrone.Core.Test.MediaFiles
             imported.Add(new ImportDecision<LocalBook>(localTrack));
 
             Mocker.GetMock<IMakeImportDecision>()
-                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>()))
+                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>(), false))
                   .Returns(imported);
 
             Mocker.GetMock<IImportApprovedBooks>()
@@ -278,7 +278,7 @@ namespace NzbDrone.Core.Test.MediaFiles
             imported.Add(new ImportDecision<LocalBook>(localTrack));
 
             Mocker.GetMock<IMakeImportDecision>()
-                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>()))
+                  .Setup(v => v.GetImportDecisions(It.IsAny<List<IFileInfo>>(), It.IsAny<IdentificationOverrides>(), It.IsAny<ImportDecisionMakerInfo>(), It.IsAny<ImportDecisionMakerConfig>(), false))
                   .Returns(imported);
 
             Mocker.GetMock<IImportApprovedBooks>()

@@ -15,7 +15,8 @@ function PendingChangesModal(props) {
     onConfirm,
     onCancel,
     bindShortcut,
-    unbindShortcut
+    unbindShortcut,
+    kind = kinds.PRIMARY
   } = props;
 
   useEffect(() => {
@@ -67,10 +68,6 @@ PendingChangesModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   bindShortcut: PropTypes.func.isRequired,
   unbindShortcut: PropTypes.func.isRequired
-};
-
-PendingChangesModal.defaultProps = {
-  kind: kinds.PRIMARY
 };
 
 export default keyboardShortcuts(PendingChangesModal);

@@ -11,9 +11,10 @@ function HintedSelectInputOption(props) {
     hint,
     depth,
     isSelected,
-    isDisabled,
-    isMultiSelect,
+    isDisabled = false,
+    isMultiSelect = false,
     isMobile,
+    isHidden = false,
     ...otherProps
   } = props;
 
@@ -52,15 +53,9 @@ HintedSelectInputOption.propTypes = {
   hint: PropTypes.node,
   depth: PropTypes.number,
   isSelected: PropTypes.bool.isRequired,
-  isDisabled: PropTypes.bool.isRequired,
-  isMultiSelect: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool,
+  isMultiSelect: PropTypes.bool,
   isMobile: PropTypes.bool.isRequired
-};
-
-HintedSelectInputOption.defaultProps = {
-  isDisabled: false,
-  isHidden: false,
-  isMultiSelect: false
 };
 
 export default HintedSelectInputOption;

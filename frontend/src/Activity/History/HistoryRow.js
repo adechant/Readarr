@@ -57,7 +57,7 @@ class HistoryRow extends Component {
       author,
       book,
       quality,
-      customFormats,
+      customFormats = [],
       customFormatScore,
       qualityCutoffNotMet,
       eventType,
@@ -267,10 +267,6 @@ HistoryRow.propTypes = {
   shortDateFormat: PropTypes.string.isRequired,
   timeFormat: PropTypes.string.isRequired,
   onMarkAsFailedPress: PropTypes.func.isRequired
-};
-
-HistoryRow.defaultProps = {
-  customFormats: []
 };
 
 export default HistoryRow;

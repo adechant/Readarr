@@ -5,12 +5,7 @@ import ToolbarMenuButton from 'Components/Menu/ToolbarMenuButton';
 import { icons } from 'Helpers/Props';
 
 function SortMenu(props) {
-  const {
-    className,
-    children,
-    isDisabled,
-    ...otherProps
-  } = props;
+  const { className, children, isDisabled = false, ...otherProps } = props;
 
   return (
     <Menu
@@ -30,11 +25,8 @@ function SortMenu(props) {
 SortMenu.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
-  isDisabled: PropTypes.bool.isRequired
+  isDisabled: PropTypes.bool
 };
 
-SortMenu.defaultProps = {
-  isDisabled: false
-};
 
 export default SortMenu;

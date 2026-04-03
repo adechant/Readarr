@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { createSelector } from 'reselect';
 import { fetchTranslations, saveDimensions, setIsSidebarVisible } from 'Store/Actions/appActions';
 import { fetchAuthor } from 'Store/Actions/authorActions';
@@ -22,6 +21,7 @@ import createSystemStatusSelector from 'Store/Selectors/createSystemStatusSelect
 import ErrorPage from './ErrorPage';
 import LoadingPage from './LoadingPage';
 import Page from './Page';
+import withRouter from 'Helpers/Hooks/withRouter';
 
 function testLocalStorage() {
   const key = 'readarrTest';

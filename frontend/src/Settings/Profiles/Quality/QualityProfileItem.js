@@ -91,17 +91,13 @@ class QualityProfileItem extends Component {
           </div>
         </label>
 
-        {
-          connectDragSource(
-            <div className={styles.dragHandle}>
-              <Icon
-                className={styles.dragIcon}
-                title={translate('CreateGroup')}
-                name={icons.REORDER}
-              />
-            </div>
-          )
-        }
+        <div ref={connectDragSource} className={styles.dragHandle}>
+          <Icon
+            className={styles.dragIcon}
+            title={translate('CreateGroup')}
+            name={icons.REORDER}
+          />
+        </div>
       </div>
     );
   }

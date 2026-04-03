@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import Switch from 'Components/Router/Switch';
+import { Route, Routes } from 'react-router-dom';
 import LogFilesConnector from './Files/LogFilesConnector';
 import UpdateLogFilesConnector from './Updates/UpdateLogFilesConnector';
 
@@ -11,7 +10,7 @@ class Logs extends Component {
 
   render() {
     return (
-      <Switch>
+      <Routes>
         <Route
           exact={true}
           path="/system/logs/files"
@@ -22,7 +21,7 @@ class Logs extends Component {
           path="/system/logs/files/update"
           component={UpdateLogFilesConnector}
         />
-      </Switch>
+      </Routes>
     );
   }
 }

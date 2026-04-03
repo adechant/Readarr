@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { toggleAdvancedSettings } from 'Store/Actions/settingsActions';
 import SettingsToolbar from './SettingsToolbar';
+import withRouter from 'Helpers/Hooks/withRouter';
 
 function mapStateToProps(state) {
   return {
@@ -33,7 +33,9 @@ class SettingsToolbarConnector extends Component {
   }
 
   componentDidMount() {
-    this._unblock = this.props.history.block(this.routerWillLeave);
+    // Note: React Router v6 (used in your withRouter) does not support history.block.
+    // To fix the crash, this is commented out. 
+    // this._unblock = this.props.router.navigate.block(this.routerWillLeave);
   }
 
   componentWillUnmount() {
@@ -56,7 +58,7 @@ class SettingsToolbarConnector extends Component {
       return true;
     }
 
-    if (this.props.hasPendingChanges ) {
+    if (this.props.hasPendingChanges) {
       this.setState({
         nextLocation,
         nextLocationAction
@@ -81,7 +83,8 @@ class SettingsToolbarConnector extends Component {
       nextLocationAction
     } = this.state;
 
-    const history = this.props.history;
+    // Use navigate from the router prop instead of history
+    const { navigate } = this.props.router;
 
     const path = `${nextLocation.pathname}${nextLocation.search}`;
 
@@ -89,13 +92,10 @@ class SettingsToolbarConnector extends Component {
       confirmed: true
     }, () => {
       if (nextLocationAction === 'PUSH') {
-        history.push(path);
+        navigate(path);
       } else {
-        // Unfortunately back and forward both use POP,
-        // which means we don't actually know which direction
-        // the user wanted to go, assuming back.
-
-        history.goBack();
+        // v6 uses navigate(-1) for back navigation
+        navigate(-1);
       }
     });
   };
@@ -127,15 +127,16 @@ class SettingsToolbarConnector extends Component {
   }
 }
 
-const historyShape = {
-  block: PropTypes.func.isRequired,
-  goBack: PropTypes.func.isRequired,
-  push: PropTypes.func.isRequired
+// Updated to match the shape provided by your custom withRouter
+const routerShape = {
+  location: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired
 };
 
 SettingsToolbarConnector.propTypes = {
   hasPendingChanges: PropTypes.bool.isRequired,
-  history: PropTypes.shape(historyShape).isRequired,
+  router: PropTypes.shape(routerShape).isRequired,
   onSavePress: PropTypes.func,
   toggleAdvancedSettings: PropTypes.func.isRequired
 };

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from 'Helpers/Hooks/useDispatch';
 import { createSelector } from 'reselect';
 import AppState from 'App/State/AppState';
 import * as commandNames from 'Commands/commandNames';
@@ -51,14 +51,14 @@ function createUpdatesSelector() {
 }
 
 function Updates() {
-  const currentVersion = useSelector((state: AppState) => state.app.version);
-  const { packageUpdateMechanismMessage } = useSelector(
+  const currentVersion = useAppSelector((state: AppState) => state.app.version);
+  const { packageUpdateMechanismMessage } = useAppSelector(
     createSystemStatusSelector()
   );
-  const { shortDateFormat, longDateFormat, timeFormat } = useSelector(
+  const { shortDateFormat, longDateFormat, timeFormat } = useAppSelector(
     createUISettingsSelector()
   );
-  const isInstallingUpdate = useSelector(
+  const isInstallingUpdate = useAppSelector(
     createCommandExecutingSelector(commandNames.APPLICATION_UPDATE)
   );
 
@@ -69,9 +69,9 @@ function Updates() {
     generalSettingsError,
     items,
     updateMechanism,
-  } = useSelector(createUpdatesSelector());
+  } = useAppSelector(createUpdatesSelector());
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isMajorUpdateModalOpen, setIsMajorUpdateModalOpen] = useState(false);
   const hasError = !!(updatesError || generalSettingsError);
   const hasUpdates = isPopulated && !hasError && items.length > 0;

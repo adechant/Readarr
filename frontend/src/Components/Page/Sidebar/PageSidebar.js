@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -12,221 +11,13 @@ import dimensions from 'Styles/Variables/dimensions';
 import HealthStatusConnector from 'System/Status/Health/HealthStatusConnector';
 import translate from 'Utilities/String/translate';
 import MessagesConnector from './Messages/MessagesConnector';
+import { links } from './sidebarLinks';
+import { getActiveParent, hasActiveChildLink, getCleanPathname } from './sidebarUtils';
 import PageSidebarItem from './PageSidebarItem';
 import styles from './PageSidebar.css';
 
 const HEADER_HEIGHT = parseInt(dimensions.headerHeight);
 const SIDEBAR_WIDTH = parseInt(dimensions.sidebarWidth);
-
-const links = [
-  {
-    iconName: icons.AUTHOR_CONTINUING,
-    title: () => translate('Library'),
-    to: '/',
-    alias: '/authors',
-    children: [
-      {
-        title: () => translate('Authors'),
-        to: '/authors'
-      },
-      {
-        title: () => translate('Books'),
-        to: '/books'
-      },
-      {
-        title: () => translate('AddNew'),
-        to: '/add/search'
-      },
-      {
-        title: () => translate('Bookshelf'),
-        to: '/shelf'
-      },
-      {
-        title: () => translate('UnmappedFiles'),
-        to: '/unmapped'
-      }
-    ]
-  },
-
-  {
-    iconName: icons.CALENDAR,
-    title: () => translate('Calendar'),
-    to: '/calendar'
-  },
-
-  {
-    iconName: icons.ACTIVITY,
-    title: () => translate('Activity'),
-    to: '/activity/queue',
-    children: [
-      {
-        title: () => translate('Queue'),
-        to: '/activity/queue',
-        statusComponent: QueueStatusConnector
-      },
-      {
-        title: () => translate('History'),
-        to: '/activity/history'
-      },
-      {
-        title: () => translate('Blocklist'),
-        to: '/activity/blocklist'
-      }
-    ]
-  },
-
-  {
-    iconName: icons.WARNING,
-    title: () => translate('Wanted'),
-    to: '/wanted/missing',
-    children: [
-      {
-        title: () => translate('Missing'),
-        to: '/wanted/missing'
-      },
-      {
-        title: () => translate('CutoffUnmet'),
-        to: '/wanted/cutoffunmet'
-      }
-    ]
-  },
-
-  {
-    iconName: icons.SETTINGS,
-    title: () => translate('Settings'),
-    to: '/settings',
-    children: [
-      {
-        title: () => translate('MediaManagement'),
-        to: '/settings/mediamanagement'
-      },
-      {
-        title: () => translate('Profiles'),
-        to: '/settings/profiles'
-      },
-      {
-        title: () => translate('Quality'),
-        to: '/settings/quality'
-      },
-      {
-        title: () => translate('CustomFormats'),
-        to: '/settings/customformats'
-      },
-      {
-        title: () => translate('Indexers'),
-        to: '/settings/indexers'
-      },
-      {
-        title: () => translate('DownloadClients'),
-        to: '/settings/downloadclients'
-      },
-      {
-        title: () => translate('ImportLists'),
-        to: '/settings/importlists'
-      },
-      {
-        title: () => translate('Connect'),
-        to: '/settings/connect'
-      },
-      {
-        title: () => translate('Metadata'),
-        to: '/settings/metadata'
-      },
-      {
-        title: () => translate('Tags'),
-        to: '/settings/tags'
-      },
-      {
-        title: () => translate('General'),
-        to: '/settings/general'
-      },
-      {
-        title: () => translate('Ui'),
-        to: '/settings/ui'
-      }
-    ]
-  },
-
-  {
-    iconName: icons.SYSTEM,
-    title: () => translate('System'),
-    to: '/system/status',
-    children: [
-      {
-        title: () => translate('Status'),
-        to: '/system/status',
-        statusComponent: HealthStatusConnector
-      },
-      {
-        title: () => translate('Tasks'),
-        to: '/system/tasks'
-      },
-      {
-        title: () => translate('Backup'),
-        to: '/system/backup'
-      },
-      {
-        title: () => translate('Updates'),
-        to: '/system/updates'
-      },
-      {
-        title: () => translate('Events'),
-        to: '/system/events'
-      },
-      {
-        title: () => translate('LogFiles'),
-        to: '/system/logs/files'
-      }
-    ]
-  }
-];
-
-function getActiveParent(pathname) {
-  let activeParent = links[0].to;
-
-  links.forEach((link) => {
-    if (link.to && link.to === pathname) {
-      activeParent = link.to;
-
-      return false;
-    }
-
-    const children = link.children;
-
-    if (children) {
-      children.forEach((childLink) => {
-        if (pathname.startsWith(childLink.to)) {
-          activeParent = link.to;
-
-          return false;
-        }
-      });
-    }
-
-    if (
-      (link.to !== '/' && pathname.startsWith(link.to)) ||
-      (link.alias && pathname.startsWith(link.alias))
-    ) {
-      activeParent = link.to;
-
-      return false;
-    }
-  });
-
-  return activeParent;
-}
-
-function hasActiveChildLink(link, pathname) {
-  const children = link.children;
-
-  if (!children || !children.length) {
-    return false;
-  }
-
-  return _.some(children, (child) => {
-    return child.to === pathname;
-  });
-}
 
 function getPositioning() {
   const windowScroll = window.scrollY == null ? document.documentElement.scrollTop : window.scrollY;
@@ -315,7 +106,7 @@ class PageSidebar extends Component {
   // Listeners
 
   onWindowClick = (event) => {
-    const sidebar = ReactDOM.findDOMNode(this._sidebarRef);
+    const sidebar = this._sidebarRef;
     const toggleButton = document.getElementById('sidebar-toggle-button');
 
     if (!sidebar) {
@@ -439,8 +230,7 @@ class PageSidebar extends Component {
       transform
     } = this.state;
 
-    const urlBase = window.Readarr.urlBase;
-    const pathname = urlBase ? location.pathname.substr(urlBase.length) || '/' : location.pathname;
+    const pathname = getCleanPathname(location.pathname);
     const activeParent = getActiveParent(pathname);
 
     let containerStyle = {};
@@ -500,20 +290,20 @@ class PageSidebar extends Component {
                   >
                     {
                       link.children && link.to === activeParent &&
-                        link.children.map((child) => {
-                          return (
-                            <PageSidebarItem
-                              key={child.to}
-                              title={child.title}
-                              to={child.to}
-                              isActive={pathname.startsWith(child.to)}
-                              isParentItem={false}
-                              isChildItem={true}
-                              statusComponent={child.statusComponent}
-                              onPress={this.onItemPress}
-                            />
-                          );
-                        })
+                      link.children.map((child) => {
+                        return (
+                          <PageSidebarItem
+                            key={child.to}
+                            title={child.title}
+                            to={child.to}
+                            isActive={pathname.startsWith(child.to)}
+                            isParentItem={false}
+                            isChildItem={true}
+                            statusComponent={child.statusComponent}
+                            onPress={this.onItemPress}
+                          />
+                        );
+                      })
                     }
                   </PageSidebarItem>
                 );
