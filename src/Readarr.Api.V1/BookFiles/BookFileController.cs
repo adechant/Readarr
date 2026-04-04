@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -120,13 +121,27 @@ namespace Readarr.Api.V1.BookFiles
                 var bookFile = _mediaFileService.Get(id);
                 var filePath = bookFile.Path;
                 var baseName = PathExtensions.BaseName(filePath);
-                Response.Headers.Add("content-disposition", string.Format("attachment;filename=\"{0}\"", baseName));
+                var sanitizedName = SanitizeContentDispositionFilename(baseName);
+                Response.Headers.Add("content-disposition", string.Format("attachment;filename={0}", sanitizedName));
                 return new PhysicalFileResult(filePath, GetContentType(filePath));
             }
             catch
             {
                 throw new BadRequestException(string.Format("no bookfiles exist for id: {0}", id));
             }
+        }
+
+        public static string SanitizeContentDispositionFilename(string filename)
+        {
+            // Combine invalid file chars and path chars for thorough sanitization
+            var invalidChars = Path.GetInvalidFileNameChars()
+                                   .Union(Path.GetInvalidPathChars())
+                                   .ToArray();
+
+            // Replace invalid characters with an underscore
+            var sanitized = string.Join("_", filename.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
+
+            return sanitized;
         }
 
         [RestPutById]
